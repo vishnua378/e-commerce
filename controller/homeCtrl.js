@@ -13,6 +13,9 @@ module.exports = {
   loginpage: (req,res)=>{
     res.render('login');
   },
+  forget_password:(req,res)=>{
+    res.render('forget_password');
+  },
 
   logout:(req,res)=>{
     req.session.destroy(()=>{    
@@ -21,7 +24,3 @@ module.exports = {
     })
   }
 };
-
-
-
-// validator.isStrongPassword(password)
