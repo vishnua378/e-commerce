@@ -22,5 +22,8 @@ module.exports = {
       res.redirect("/home")
       
     })
+  },
+  update_password:(req,res)=>{
+    res.render('update_password');
   }
 };
