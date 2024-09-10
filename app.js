@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
 const home =require('./routes/home');
 const user = require('./routes/userRoute');
+const admin = require('./routes/adminRoute');
 
 
 const MONGO_URL = process.env.MONGO_URL;
@@ -34,6 +35,7 @@ app.use(express.static('public'));
 
 app.use(user);
 app.use('/',home);
+app.use('/admin',admin);
 
 
 

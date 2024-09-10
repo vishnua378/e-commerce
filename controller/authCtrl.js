@@ -1,70 +1,92 @@
-const User = require("../models/User");
-const sendEmail = require("../utilities/sendmail");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const validatePassword = require("../passwordValidator");
+  const User = require("../models/User");
+  const sendEmail = require("../utilities/sendmail");
+  const bcrypt = require("bcrypt");
+  const jwt = require("jsonwebtoken");
+  const validatePassword = require("../passwordValidator");
 
+
+ 
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.render("signUp", { error: "Email already in use" });
+
+    if (!existingUser) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const newUser = new User({
+        name,
+        email,
+        password: hashedPassword,
+        isAdmin: false 
+      });
+
+      await newUser.save();
+
+ 
+      req.session.user = newUser;
+      
+      if (newUser.isAdmin) {
+        res.status(200).redirect('/admin-login');
+      } else {
+        res.status(200).redirect('/login');
+      }
+
+    } else {
+      res.status(400).render("signUp", { error: "Email already in use" });
     }
 
-    const newUser = new User({ name, email, password });
-    await newUser.save();
-
-    req.session.user = newUser;
-    const isAuthenticated = req.session.user ? true : false;
-
-    // res.status(201).json(newUser);
-    return res.redirect("/login");
   } catch (error) {
+    console.error("Error during registration: ", error.message);
     res.status(500).json({ error: "Server error" });
   }
 };
 
 const login = async (req, res) => {
   try {
-    console.log("reached login side successfully");
-
     const { email, password } = req.body;
-    console.log(email+"/"+password);
     
-    const isAuthenticated = req.session.user ? true : false;
 
-    const user = await User.findOne({ email });
-    if (!user) {
-        console.log(user);
-        
-        
-      return res.render("login", {
-        error: "Invalid email or password",
-        isAutenticated: false,
-      });
+  
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: "Missing email or password" });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-
+    const findUser = await User.findOne({ email });
+    console.log(findUser);
+    if (!findUser) {
+      return res.status(401).json({ success: false, message: "Invalideee email or password" });
+    }
+    
+    const isMatch = await bcrypt.compare(password, findUser.password);
     if (!isMatch) {
-        console.log("Invalid email or password");
-        
-      return res.render("login", {
-        error: "Invalid email or password",
-        isAutenticated: false,
-      });
+      console.log(findUser.password+'+++',password)
+      return res.status(401).json({ success: false, message: "Invalid emaillllllll or password" });
     }
 
-    req.session.user = user;
 
-    return res.redirect("/home");
-  } catch (error) {
-    console.log("error here ", error.message);
-    res.status(500).json({ error: "server error" });
+  
+    req.session.user = findUser;
+
+  
+    if (findUser.isAdmin) {
+      return res.redirect("/admin/admin-login");
+    } else {
+      return res.redirect("/home");
+    }
+
+  } catch (err) {
+    console.error("Error during login:", err.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
+
+ 
+
+
 
 const forgotpassword = async (req, res) => {
   try {
@@ -152,8 +174,8 @@ const resetPassword = async (req, res) => {
       return res.status(400).json({ error: "Password not match" });
     }
 
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    
+    const hashedPassword = await bcrypt.hash(password,10);
 
     await User.findByIdAndUpdate(req.session.user._id,{password:hashedPassword});
 

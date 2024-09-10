@@ -1,6 +1,6 @@
 const express =  require('express')
 const router = express.Router()
-const {registerUser,login} = require('../controller/userCtrl')
+const {registerUser,login} = require('../controller/authCtrl')
 
 const {getHome,getSignUp,postSignUp,contact,loginpage,logout,forget_password,update_password} = require('../controller/homeCtrl')
 router.get('/home',getHome)

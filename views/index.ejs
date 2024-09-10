@@ -74,12 +74,13 @@
 	          <li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">profile</a>
 				<div class="dropdown-menu" aria-labelledby="dropdown04">
-					<% if( isAuthenticated) {%>
-						<a class="dropdown-item" href="/logout">signout</a>
-						<%}else{%>
-							<a class="dropdown-item" href="/login">login</a>
-						<%} %>
+					<a class="dropdown-item" href="/logout">logout</a>
+
+					<a class="dropdown-item" href="/login">login</a>
 				</div>
+				
+				
+				
 	        </ul>
 	      </div>
 	    </div>
