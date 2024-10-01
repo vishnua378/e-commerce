@@ -26,6 +26,7 @@ const registerUser = async (req, res) => {
 
  
       req.session.user = newUser;
+      const isAuthenticated = req.session.user ? true:false;
       
       if (newUser.isAdmin) {
         res.status(200).redirect('/admin-login');
@@ -46,6 +47,7 @@ const registerUser = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    const isAuthenticated = req.session.user ?true:false;
     
 
   
@@ -56,13 +58,13 @@ const login = async (req, res) => {
     const findUser = await User.findOne({ email });
     console.log(findUser);
     if (!findUser) {
-      return res.status(401).json({ success: false, message: "Invalideee email or password" });
+      return res.status(401).json({ success: false, message: "Invalideee email or password",isAuthenticated:false});
     }
     
     const isMatch = await bcrypt.compare(password, findUser.password);
     if (!isMatch) {
       console.log(findUser.password+'+++',password)
-      return res.status(401).json({ success: false, message: "Invalid emaillllllll or password" });
+      return res.status(401).json({ success: false, message: "Invalid emaillllllll or password",isAuthenticated:false });
     }
 
 

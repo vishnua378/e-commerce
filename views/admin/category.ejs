@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel - Category Management</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Custom CSS -->
+    <style>
+      body {
+        display: flex;
+      }
+      .sidebar {
+        width: 250px;
+        height: 100vh;
+        background-color: #343a40;
+        color: white;
+        padding: 20px;
+      }
+      .sidebar a {
+        color: white;
+        text-decoration: none;
+        margin: 10px 0;
+        display: block;
+      }
+      .sidebar a:hover {
+        background-color: #495057;
+        border-radius: 5px;
+      }
+      .content {
+        flex-grow: 1;
+        padding: 20px;
+      }
+      .main-buttons {
+        width: 200px;
+        display: flex;
+        justify-content: center;
+        background-color: transparent;
+        border: none;
+        padding: 10px 10px;
+        margin-top: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease,
+          transform 0.3s ease;
+      }
+      .main-buttons:hover {
+        background-color: #495057;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+        color: white;
+        transform: scale(1.05);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h2>Admin Panel</h2>
+      <button class="main-buttons">
+        <a href="/admin/dashboard">Dashboard</a>
+      </button>
+      <button class="main-buttons">
+        <a href="/admin/admin-productpage">Products</a>
+      </button>
+      <button class="main-buttons">
+        <a href="/admin/admin-orders">Orders</a>
+      </button>
+      <button class="main-buttons">
+        <a href="/admin/admin-users">Users</a>
+      </button>
+      <button class="main-buttons">
+        <a href="/admin/admin-category">Categories</a>
+      </button>
+      <button class="main-buttons"><a href="#">Settings</a></button>
+      <button class="main-buttons"><a href="#">Logout</a></button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+      <div class="container-fluid">
+        <h1>Category Management</h1>
+        <!-- Category Form -->
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card mb-4">
+              <div class="card-header">Add New Category</div>
+              <div class="card-body">
+                <form action="/category/create" method="POST" id="categoryForm">
+                  <div class="mb-3">
+                    <label for="categoryName" class="form-label">Category Name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="categoryName"
+                      name="name" 
+                      placeholder="Enter category name"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="categoryDescription" class="form-label">Category Description</label>
+                    <textarea
+                      class="form-control"
+                      id="categoryDescription"
+                      name="description" 
+                      rows="3"
+                      placeholder="Enter category description"
+                    ></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Add Category</button>
+                </form>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Categories List -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">Categories List</div>
+              <div class="card-body">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th scope="col">Category ID</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Description</th>
+                      <th scope="col">Created At</th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="categoryTableBody">
+                    <% categories.forEach(function(category,index){ %>
+                      <tr>
+                        <td><%= index+1 %></td>
+                        <td><%= category.name %></td>
+                        <td><%= category.description %></td>
+                        <td><%= new Date(category.createdat).toLocaleDateString() %></td>
+                        <td class="d-flex">
+                          <form action="/category/edit-Category/<%= category.id %>" >
+                            <button class="btn btn-warning btn-sm" style="margin-right: 5px;">Edit</button>
+                          </form>
+                         
+                          
+                          <form action="/category/deleteCategory/<%= category.id %>"  method="post">
+                            <button type="submit" class="btn btn-danger btn-sm">DELETE</button>
+                          </form>
+                        </td>
+                      </tr>
+                      <% }) %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    

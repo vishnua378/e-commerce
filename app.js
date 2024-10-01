@@ -7,6 +7,7 @@ const dotenv = require("dotenv").config();
 const home =require('./routes/home');
 const user = require('./routes/userRoute');
 const admin = require('./routes/adminRoute');
+const categ = require('./routes/cateroryRoute')
 
 
 const MONGO_URL = process.env.MONGO_URL;
@@ -18,7 +19,7 @@ const dbconnect = require("./config/dbconnect");
 dbconnect();
 
 app.use(
-    session({
+  session({
       secret: "your_secret_key",
       resave: false,
       saveUninitialized: true,
@@ -36,6 +37,7 @@ app.use(express.static('public'));
 app.use(user);
 app.use('/',home);
 app.use('/admin',admin);
+app.use('/category',categ);
 
 
 
